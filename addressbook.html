@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Contact Manager</title>
+  </head>
+  <body>
+    <button id="add-contact">Add Contact</button>
+    <button id="view-contacts">View Contacts</button>
+    <button id="edit-contact">Edit Contact</button>
+    <button id="delete-contact">Delete Contact</button>
+
+    <script>
+      const addContact = () => {
+        let name = prompt("Enter contact name:");
+        let mobile = prompt("Enter contact number:");
+
+        let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+
+        let existingContact = contacts.find((c) => c.mobile === mobile);
+        if (existingContact) {
+          alert("Mobile number is already existing.");
+          return;
+        }
+
+        contacts.push({ name, mobile });
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+
+        alert("Contact added successfully.");
+      };
+
+      const viewContacts = () => {
+        let filter = prompt("Enter search phrase:");
+
+        let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+
+        if (filter) {
+          contacts = contacts.filter(
+            (c) =>
+              c.name.toLowerCase().includes(filter.toLowerCase()) ||
+              c.mobile.includes(filter)
+          );
+        }
+
+        if (contacts.length === 0) {
+          alert("No contacts found.");
+          return;
+        }
+
+        let list = "";
+        for (let c of contacts) {
+          list += `${c.name} (${c.mobile})\n`;
+        }
+        alert(list);
+      };
+
+      const editContact = () => {
+        let mobile = prompt("Enter mobile number:");
+
+        let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+
+        let existingContact = contacts.find((c) => c.mobile === mobile);
+        if (!existingContact) {
+          alert("Contacts not found.");
+          return;
+        }
+
+        let name = prompt("Enter new name:", existingContact.name);
+        mobile = prompt(
+          "Enter new mobile number:",
+          existingContact.mobile
+        );
+
+        let updatedContact = { name, mobile };
+
+        let index = contacts.indexOf(existingContact);
+        contacts.splice(index, 1, updatedContact);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+
+        alert("Contact updated successfully.");
+      };
+
+      const deleteContact = () => {
+        let mobile = prompt("Enter mobile number:");
+
+        let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+
+        let existingContact = contacts.find((c) => c.mobile === mobile);
+        if (!existingContact) {
+          alert("Contacts not found.");
+          return;
+        }
+
+        let index = contacts.indexOf(existingContact);
+        contacts.splice(index, 1);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+
+        alert("Contact deleted successfully.");
+      };
+
+      document.getElementById("add-contact").addEventListener("click", addContact);
+      document.getElementById("view-contacts").addEventListener("click", viewContacts);
+      document.getElementById("edit-contact").addEventListener("click", editContact);
+      document.getElementById("delete-contact").addEventListener("click", deleteContact);
+    </script>
+  </body>
+</html>
+
